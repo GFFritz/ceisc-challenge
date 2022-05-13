@@ -5,10 +5,15 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Nova postagem</div>
+                    <div class="card-header">Editar postagem</div>
 
                     <div class="card-body">
-                        <form id="upload" class="form-group" method="POST" enctype="multipart/form-data">
+                        <div id="img-block">
+                            <img src="/img/{{$data->imagem}}" class="img-thumbnail mb-3" />
+                             <button id="remove" class="btn btn-danger mb-3">Remover imagem</button>
+                        </div>
+
+                        <form id="upload" class="form-group d-none" method="POST" enctype="multipart/form-data">
                             <input type="file" class="form-control-file" id="file" name="file">
                             <button type="submit" class="btn btn-primary my-2" name="upload" value="Upload">Upload</button>
                             <div class="progress">
@@ -20,10 +25,11 @@
                             <div id="success"></div>
                         </form>
 
-                        <form id="form" class="form-group" action="/publicar">
-                            <input type="text" class="form-control" placeholder="Titulo" id="titulo" name="titulo">
-                            <textarea type="text" class="form-control my-3" placeholder="Descrição" id="descricao" name="descricao"></textarea>
-                            <input type="hidden" name="img" id="img">
+                        <form id="form" class="form-group" action="/update">
+                            <input type="text" class="form-control" placeholder="Titulo" id="titulo" name="titulo" value="{{$data->titulo}}">
+                            <textarea type="text" class="form-control my-3" placeholder="Descrição" id="descricao" name="descricao" >{{$data->descricao}}</textarea>
+                            <input type="hidden" name="img" id="img" value="{{$data->imagem}}">
+                            <input type="hidden" name="id" id="id" value="{{$data->id}}">
                             <button type="submit" class="btn btn-success mt-5">Publicar</button>
                         </form>
 

@@ -18,6 +18,10 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <!-- Import File Upload -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="https://malsup.github.io/jquery.form.js"></script>
 </head>
 <body>
     <div id="app">
@@ -35,7 +39,6 @@
                     <ul class="navbar-nav mr-auto">
 
                     </ul>
-                    
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -84,5 +87,56 @@
             @yield('content')
         </main>
     </div>
+
+    <script type="text/javascript">
+        $(document).ready(function(e) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $('#remove').click(function() {
+                $('#upload').removeClass('d-none');
+                $('#img-block').addClass('d-none');
+            });
+
+            $('#upload').submit(function(e) {
+                e.preventDefault();
+                var formData = new FormData(this);
+
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ url('upload') }}",
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: (data) => {
+                        $('#success').empty();
+                    },
+                    success: (data) => {
+                        if (data.errors) {
+                            $('.progress-bar').text('0%');
+                            $('.progress-bar').css('width', '0%');
+                            $('#success').html('<span class="text-danger"><b>' + data.errors +
+                                '</b></span>');
+                        }
+                        if (data.success) {
+                            $('.progress-bar').text('Concluído');
+                            $('.progress-bar').css('width', '100%');
+                            $('#success').html('<span class="text-success"><b>' + data.success +
+                                '</b></span><br /><br />');
+                            $('#success').append(data.image);
+                            $('#img').val(data.name);
+                        }
+                    },
+                    error: function(data) {
+                        console.log(data);
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
